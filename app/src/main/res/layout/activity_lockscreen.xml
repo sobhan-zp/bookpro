@@ -1,0 +1,47 @@
+<com.gw.swipeback.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeBackLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:directionMode="left"
+    app:maskAlpha="125"
+    app:swipeBackFactor="0.5">
+
+
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_lock"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+
+            <com.romainpiel.shimmer.ShimmerTextView
+                android:id="@+id/shimmer_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="380dp"
+                android:text=">  slide to unclock"
+                android:textColor="#444"
+                android:textSize="25sp" />
+
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+
+
+</com.gw.swipeback.SwipeBackLayout>

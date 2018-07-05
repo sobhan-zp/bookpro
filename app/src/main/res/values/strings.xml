@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">رشت پرو</string>
+
+    <string name="slide1_title">slide1</string>
+    <string name="slide2_title">slide2</string>
+    <string name="slide3_title">slide3</string>
+    <string name="slide4_title">slide4</string>
+    <string name="slide1_subtitle">your text here</string>
+    <string name="slide2_subtitle">your text here</string>
+    <string name="slide3_subtitle">your text here</string>
+    <string name="slide4_subtitle">your text here</string>
+    <string name="input_phone">لطفا شماره موبایل خود را وارد کنید</string>
+    <string name="login">ورود</string>
+    <string name="save">ثبت</string>
+    <string name="title_activity_body">BodyActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+
+    <string name="profile">پروفایل</string>
+    <string name="map">نقشه</string>
+    <string name="music">پادکست</string>
+    <string name="gallery">گالری</string>
+    <string name="home">خانه</string>
+    <string name="tv_ar">واقعیت افزوده</string>
+    <string name="tv_vr">واقعیت مجازی</string>
+
+
+
+    <string name="number_zero">0</string>
+    <string name="number_one">1</string>
+    <string name="number_two">2</string>
+    <string name="number_three">3</string>
+    <string name="number_four">4</string>
+    <string name="number_five">5</string>
+    <string name="number_six">6</string>
+    <string name="number_seven">7</string>
+    <string name="number_eight">8</string>
+    <string name="number_nine">9</string>
+    <string name="btn_clear">حذف</string>
+    <string name="btn_backspace">برگشت</string>
+
+
+
+</resources>
