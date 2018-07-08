@@ -40,7 +40,7 @@
     <string name="number_nine">9</string>
     <string name="btn_clear">حذف</string>
     <string name="btn_backspace">برگشت</string>
-
+    <string name="card_view_dismiss_success">swipe_to_dismiss</string>
 
 
 </resources>

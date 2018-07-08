@@ -2,6 +2,7 @@ package pro.book.ar.Activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,10 +10,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
-
+import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -22,111 +23,161 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pro.book.ar.ArModuls.ArModulActivity;
+import pro.book.ar.Adapter.RecyclerViewAdapter_main;
 import pro.book.ar.Classes.ImageUtil;
+import pro.book.ar.Classes.SwipeableRecyclerViewTouchListener;
+import pro.book.ar.Model.Main;
 import pro.book.ar.Model.Target;
 import pro.book.ar.Network.AppController;
 import pro.book.ar.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class MainActivity extends AppCompatActivity {
 
 
-
-    @BindView(R.id.btn_ar_main)
-    Button btnArMain;
- /*   @BindView(R.id.btn_desc_ar_main)
-    Button btnDescArMain;*/
-    @BindView(R.id.btn_qr_main)
-    Button btnQrMain;
-    @BindView(R.id.btn_gallery_main)
-    Button btnGalleryMain;
-    @BindView(R.id.btn_info_main)
-    Button btnInfoMain;
-    @BindView(R.id.btn_aboutme_main)
-    Button btnAboutmeMain;
-    @BindView(R.id.btn_aboutbook_main)
-    Button btnAboutbookMain;
-
-
+    @BindView(R.id.rv_main)
+    RecyclerView rvMain;
     private ImageView gyroscopeObserver;
 
+
+    int pos = -1;
+     ArrayList<Main> stringArrayList = new ArrayList<>();
+
+    public static String[] tlt =
+
+            {
+                    "واقعیت افزوده",
+                    "تصاویر",
+                    "پادکست",
+                    "تکمیل اطلاعات",
+                    "درباره سازنده",
+
+            };
+
+
+
+
+    public static int[] img =
+
+            {
+                    R.mipmap.ic_home,
+                    R.mipmap.ic_gallery,
+                    R.mipmap.ic_radio,
+                    R.mipmap.ic_profile,
+                    R.mipmap.ic_about,
+
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         setPermission_Camera();
-
-
         loadTarget();
+        setUpRecyclerView();
+        setData();
 
-
-        btnArMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ArModulActivity.class));
-            }
-        });
-
-
-       /* btnDescArMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(MainActivity.this, ArModulActivity.class));
-
-            }
-        });
-*/
-
-        btnQrMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ActivityMusic.class));
-
-            }
-        });
-
-
-        btnGalleryMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ActivityGallery.class));
-
-            }
-        });
-
-
-        btnInfoMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ActivityProfile.class));
-
-            }
-        });
-
-
-        btnAboutmeMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(MainActivity.this, ArModulActivity.class));
-
-            }
-        });
-
-
-        btnAboutbookMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(MainActivity.this, ArModulActivity.class));
-
-            }
-        });
 
     }
+
+
+    /*  set up recycler view */
+    private void setUpRecyclerView() {
+
+        rvMain.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvMain.setLayoutManager(linearLayoutManager);
+
+
+
+
+        //set recycler view adapter
+        final RecyclerViewAdapter_main recyclerViewAdapter = new RecyclerViewAdapter_main(this, stringArrayList);
+        rvMain.setAdapter(recyclerViewAdapter);
+
+
+        /*  set swipe touch listener */
+        SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(rvMain, new SwipeableRecyclerViewTouchListener.SwipeListener() {
+            @Override
+            public boolean canSwipeLeft(int position) {
+                //enable/disable left swipe on checkbox base else use true/false
+                //Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                pos = position;
+
+
+
+
+                return true;
+            }
+
+            @Override
+            public boolean canSwipeRight(int position) {
+                //enable/disable right swipe on checkbox base else use true/false
+                return false;
+            }
+
+            @Override
+            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                //on cardview swipe left dismiss update adapter
+                //onCardViewDismiss(reverseSortedPositions, stringArrayList, recyclerViewAdapter);
+                switch (pos){
+
+
+                    case 0:
+                        startActivity(new Intent(MainActivity.this , ArModulActivity.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(MainActivity.this , ActivityGallery.class));
+                        break;
+                    case 2:
+                        startActivity(new Intent(MainActivity.this , ActivityMusic.class));
+                        break;
+                    case 3:
+                        startActivity(new Intent(MainActivity.this , EnterProfileActivity.class));
+                        break;
+                    case 4:
+                        startActivity(new Intent(MainActivity.this , ActivityProfile.class));
+                        break;
+
+
+                }
+            }
+
+            @Override
+            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                //on cardview swipe right dismiss update adapter
+                //onCardViewDismiss(reverseSortedPositions, stringArrayList, recyclerViewAdapter);
+            }
+        });
+
+        //add item touch listener to recycler view
+        rvMain.addOnItemTouchListener(swipeTouchListener);
+
+
+    }
+
+
+    private void onCardViewDismiss(int[] reverseSortedPositions, ArrayList<Main> stringArrayList, RecyclerViewAdapter_main recyclerViewAdapter) {
+        for (int position : reverseSortedPositions) {
+            stringArrayList.remove(position);
+            recyclerViewAdapter.notifyItemRemoved(position);
+        }
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * method to return dummy string array list data
+     **/
+
+
+
 
     private void loadTarget() {
         JsonArrayRequest req = new JsonArrayRequest(AppController.URL_TARGET,
@@ -166,6 +217,17 @@ public class MainActivity extends AppCompatActivity {
         });
         req.setShouldCache(false);
         AppController.getInstance().addToRequestQueue(req, "loadTarget");
+    }
+
+    private void setData() {
+
+        for (int i = 0; i < tlt.length; i++) {
+            Main model = new Main();
+            model.setTitle(tlt[i]);
+            model.setImage(img[i]);
+            stringArrayList.add(model);
+        }
+
     }
 
 
@@ -209,4 +271,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+
 }
+
+

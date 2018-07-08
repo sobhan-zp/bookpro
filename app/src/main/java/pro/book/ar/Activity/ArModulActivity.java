@@ -6,7 +6,7 @@
 //
 //================================================================================================================================
 
-package pro.book.ar.ArModuls;
+package pro.book.ar.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -25,6 +25,7 @@ import android.util.Log;
 import java.util.HashMap;
 
 import cn.easyar.Engine;
+import pro.book.ar.ArModuls.GLView;
 import pro.book.ar.R;
 
 

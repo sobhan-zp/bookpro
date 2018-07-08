@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#616161</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">@android:color/transparent</color>
 
     <color name="slide1">#26c6da</color>
     <color name="slide2">#dce775</color>
@@ -12,6 +12,7 @@
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="line">#97ffffff</color>
 
     <color name="bg_bottombar">#ffffff</color>
 

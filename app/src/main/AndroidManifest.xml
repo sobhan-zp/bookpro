@@ -28,9 +28,7 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".Activity.MainActivity.MainActivity">
 
-        </activity>
 
 
         <activity android:name=".Activity.LoginActivity">
@@ -45,8 +43,15 @@
         <activity
             android:name="za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity android:name=".Activity.EnterProfileActivity" />
-        <activity android:name=".ArModuls.ArModulActivity" />
+        <activity android:name=".Activity.ArModulActivity" />
+
+        <activity android:name=".Activity.MainActivity"/>
+
+        <activity android:name=".Activity.ActivityProfile"/>
+        <activity android:name=".Activity.ActivityMusic"/>
+        <activity android:name=".Activity.ActivityGallery"/>
 
 
 

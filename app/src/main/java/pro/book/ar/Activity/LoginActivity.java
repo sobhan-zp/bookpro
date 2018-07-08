@@ -23,7 +23,7 @@ import pro.book.ar.R;
 import za.co.riggaroo.materialhelptutorial.TutorialItem;
 import za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity;
 
-public class LoginActivity extends BaseToolBarActivity  {
+public class LoginActivity extends BaseToolBarActivity {
 
     private static final int REQUEST_CODE = 1234;
     SharedPreferences prefs;
@@ -54,8 +54,6 @@ public class LoginActivity extends BaseToolBarActivity  {
     @BindView(R.id.t9_key_backspace)
     TextView t9KeyBackspace;
 
-    
-
 
     private GoogleApiClient client;
 
@@ -69,7 +67,7 @@ public class LoginActivity extends BaseToolBarActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ButterKnife.bind(this);
 
         //swipe
@@ -87,15 +85,11 @@ public class LoginActivity extends BaseToolBarActivity  {
         //keyboard
 
 
-
-
     }
 
 
-
-
     public void tvOnClickLogin(View v) {
-       
+
         switch (v.getId()) {
             case R.id.t9_key_0:
                 passwordField.append("0");
@@ -138,11 +132,14 @@ public class LoginActivity extends BaseToolBarActivity  {
                 if (charCount > 0) {
                     editable.delete(charCount - 1, charCount);
                 }
-
-
             }
             break;
 
+
+        }
+
+        if (passwordField.getText().toString().equals("00000000")) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
     }
 

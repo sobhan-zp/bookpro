@@ -54,7 +54,7 @@ public class AppController extends Application {
         super.onCreate();
         WxSwipeBackActivityManager.getInstance().init(this);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/irsans.ttf")
+                .setDefaultFontPath("fonts/IRANSans_Bold.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
