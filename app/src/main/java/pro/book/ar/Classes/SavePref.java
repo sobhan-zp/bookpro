@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
  */
 
 public class SavePref {
-    private final String pref_name = "ir.loper.neginsabz.Network";
+    private final String pref_name = "pro.book.ar";
     private SharedPreferences sharedPref;
 
     public 	SavePref(Context context){

@@ -34,8 +34,8 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="iconShape" value="NONE" />
-                                      <entry key="imageAsset" value="C:\Users\zp\Desktop\ic_about.png" />
-                                      <entry key="outputName" value="ic_about" />
+                                      <entry key="imageAsset" value="C:\Users\zp\Desktop\ic_profile.png" />
+                                      <entry key="outputName" value="ic_profile" />
                                     </map>
                                   </option>
                                 </PersistentState>

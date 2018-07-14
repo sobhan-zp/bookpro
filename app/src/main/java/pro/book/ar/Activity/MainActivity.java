@@ -6,14 +6,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -23,12 +35,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pro.book.ar.Adapter.RecyclerViewAdapter_main;
+import pro.book.ar.Classes.BlureImage;
 import pro.book.ar.Classes.ImageUtil;
+import pro.book.ar.Classes.RuntimePermissionHelper;
+import pro.book.ar.Classes.SavePref;
 import pro.book.ar.Classes.SwipeableRecyclerViewTouchListener;
 import pro.book.ar.Model.Main;
 import pro.book.ar.Model.Target;
@@ -42,11 +62,19 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.rv_main)
     RecyclerView rvMain;
+    @BindView(R.id.btn_imagepicker_main)
+    ImageView btnImagepickerMain;
+    @BindView(R.id.ll_img_back_main)
+    LinearLayout llImgBackMain;
     private ImageView gyroscopeObserver;
 
+    SavePref save;
 
     int pos = -1;
-     ArrayList<Main> stringArrayList = new ArrayList<>();
+    ArrayList<Main> stringArrayList = new ArrayList<>();
+    //choose bg
+    private static final String IMAGE_DIRECTORY = "/demonuts";
+    private int GALLERY = 1, CAMERA = 2;
 
     public static String[] tlt =
 
@@ -58,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
                     "درباره سازنده",
 
             };
-
-
 
 
     public static int[] img =
@@ -78,11 +104,54 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        RunTimePermission();
+
+        save = new SavePref(this);
         ButterKnife.bind(this);
         setPermission_Camera();
-        loadTarget();
         setUpRecyclerView();
         setData();
+        showPictureDialog();
+        loadimgGg();
+
+
+
+
+    }
+
+
+    private void RunTimePermission(){
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            RuntimePermissionHelper runtimePermissionHelper = RuntimePermissionHelper.getInstance(this);
+            if (runtimePermissionHelper.isAllPermissionAvailable()) {
+            // All permissions available. Go with the flow
+            } else {
+            // Few permissions not granted. Ask for ungranted permissions
+                runtimePermissionHelper.setActivity(this);
+                runtimePermissionHelper.requestPermissionsIfDenied();
+            }
+        }else{
+            // SDK below API 23. Do nothing just go with the flow.
+        }
+
+    }
+
+    private void loadimgGg() {
+
+        try {
+
+            if(!save.load("imgBg" , "").equals("")){
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                BitmapDrawable background = new BitmapDrawable(BitmapFactory.decodeFile(save.load("imgBg" , ""), options));
+                llImgBackMain.setBackgroundDrawable(background);
+            }
+
+        }catch (Exception e){
+
+        }
 
 
     }
@@ -94,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
         rvMain.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvMain.setLayoutManager(linearLayoutManager);
-
-
 
 
         //set recycler view adapter
@@ -112,8 +179,6 @@ public class MainActivity extends AppCompatActivity {
                 pos = position;
 
 
-
-
                 return true;
             }
 
@@ -127,23 +192,23 @@ public class MainActivity extends AppCompatActivity {
             public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
                 //on cardview swipe left dismiss update adapter
                 //onCardViewDismiss(reverseSortedPositions, stringArrayList, recyclerViewAdapter);
-                switch (pos){
+                switch (pos) {
 
 
                     case 0:
-                        startActivity(new Intent(MainActivity.this , ArModulActivity.class));
+                        startActivity(new Intent(MainActivity.this, ArModulActivity.class));
                         break;
                     case 1:
-                        startActivity(new Intent(MainActivity.this , ActivityGallery.class));
+                        startActivity(new Intent(MainActivity.this, ActivityGallery.class));
                         break;
                     case 2:
-                        startActivity(new Intent(MainActivity.this , ActivityMusic.class));
+                        startActivity(new Intent(MainActivity.this, ActivityMusic.class));
                         break;
                     case 3:
-                        startActivity(new Intent(MainActivity.this , EnterProfileActivity.class));
+                        startActivity(new Intent(MainActivity.this, EnterProfileActivity.class));
                         break;
                     case 4:
-                        startActivity(new Intent(MainActivity.this , ActivityProfile.class));
+                        startActivity(new Intent(MainActivity.this, ActivityProfile.class));
                         break;
 
 
@@ -179,46 +244,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void loadTarget() {
-        JsonArrayRequest req = new JsonArrayRequest(AppController.URL_TARGET,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        //Log.e("TAG---------OK", response.toString());
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-
-                                JSONObject object = response.getJSONObject(i);
-                                String url = object.getString("url");
-
-                                Target target = new Target(
-                                        String.valueOf(i),
-                                        url.substring(url.lastIndexOf('/') + 1, url.length()),
-                                        object.getString("url"),
-                                        object.getString("value")
-                                );
-
-                                new ImageUtil(MainActivity.this, target.getUrl(), target.getName());
-
-                                AppController.TARGET.add(target);
-                            }
-                            AppController.TARGET_NUMBERS = response.length();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("TAG------------Error", "Error: " + error.getMessage());
-            }
-        });
-        req.setShouldCache(false);
-        AppController.getInstance().addToRequestQueue(req, "loadTarget");
-    }
-
     private void setData() {
 
         for (int i = 0; i < tlt.length; i++) {
@@ -228,6 +253,129 @@ public class MainActivity extends AppCompatActivity {
             stringArrayList.add(model);
         }
 
+    }
+
+
+    private void showPictureDialog() {
+
+        btnImagepickerMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                AlertDialog.Builder pictureDialog = new AlertDialog.Builder(MainActivity.this);
+                String[] pictureDialogItems = {
+                        "انتخاب از گالری",
+                        "انتخاب از دوربین"};
+                pictureDialog.setItems(pictureDialogItems,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        choosePhotoFromGallary();
+                                        break;
+                                    case 1:
+                                        takePhotoFromCamera();
+                                        break;
+                                }
+                            }
+                        });
+
+                pictureDialog.show();
+
+            }
+        });
+    }
+
+
+    public void choosePhotoFromGallary() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        startActivityForResult(galleryIntent, GALLERY);
+    }
+
+    private void takePhotoFromCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == this.RESULT_CANCELED) {
+            return;
+        }
+        if (requestCode == GALLERY) {
+            if (data != null) {
+                Uri contentURI = data.getData();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+                    String path = saveImage(bitmap);
+                    Toast.makeText(MainActivity.this, "عکس ذخیره شد", Toast.LENGTH_SHORT).show();
+
+                    //blure Gallery
+                    bitmap = new BlureImage(bitmap , 1 , 6).getBitmap();
+                    BitmapDrawable background = new BitmapDrawable(bitmap);
+                    llImgBackMain.setBackgroundDrawable(background);
+
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "لغو شد", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        } else if (requestCode == CAMERA) {
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+
+            //blure Camera
+            thumbnail = new BlureImage(thumbnail , 1 , 6).getBitmap();
+            BitmapDrawable background = new BitmapDrawable(thumbnail);
+            llImgBackMain.setBackgroundDrawable(background);
+            saveImage(thumbnail);
+            Toast.makeText(MainActivity.this, "عکس ذخیره شد", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public String saveImage(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(
+                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs();
+        }
+
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance()
+                    .getTimeInMillis() + ".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(this,
+                    new String[]{f.getPath()},
+                    new String[]{"image/jpeg"}, null);
+            fo.close();
+            Log.e("TAG", "File Saved::---->" + f.getAbsolutePath());
+
+            save.save("imgBg" , f.getAbsolutePath());
+
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            Log.e("TAG", "ERROR::---->" + e1.getMessage());
+            e1.printStackTrace();
+        }
+
+        return "";
     }
 
 
@@ -241,18 +389,6 @@ public class MainActivity extends AppCompatActivity {
 
                     //dastrasi dade shode
 
-                } else {
-                    new AlertDialog.Builder(this)
-                            .setMessage("برای اجرای برنامه باید حتما دسترسی رو به برنامه بدهید")
-                            .setCancelable(false)
-                            .setNegativeButton("دادن دسترسی", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    setPermission_Camera();
-
-                                }
-                            })
-                            .show();
                 }
             }
             return;
@@ -260,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //checkPermission
-    public void setPermission_Camera() {
+    public void setPermission_Camera()          {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.CAMERA)) {

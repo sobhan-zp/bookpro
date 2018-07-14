@@ -18,7 +18,7 @@ public abstract class BaseSwipeBackActivity extends BaseToolBarActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSwipeBackLayout = (SwipeBackLayout) findViewById(R.id.swipeBackLayout);
-        mSwipeBackLayout.setDirectionMode(SwipeBackLayout.FROM_LEFT);
+        mSwipeBackLayout.setDirectionMode(SwipeBackLayout.FROM_RIGHT);
     }
 
 

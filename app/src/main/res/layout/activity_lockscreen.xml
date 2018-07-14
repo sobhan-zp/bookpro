@@ -3,14 +3,12 @@
     android:id="@+id/swipeBackLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:directionMode="left"
+    app:directionMode="right"
     app:maskAlpha="125"
     app:swipeBackFactor="0.5">
 
 
-
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -18,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_lock"
+            android:layout_gravity="center"
             android:scaleType="centerCrop" />
 
         <LinearLayout
@@ -26,22 +25,83 @@
             android:orientation="vertical">
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="50dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:tint="@color/gray"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/logo" />
+
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="100dp"
+                    android:orientation="horizontal" >
+
+
+
+                    <EditText
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/edittext_bg"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:hint="+98"
+                        android:enabled="false"
+                        android:textColorHint="@color/material_grey_700" />
+
+
+                    <EditText
+                        android:id="@+id/et_phone_lock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="100dp"
+                        android:background="@drawable/edittext_bg"
+                        android:ems="10"
+                        android:textColor="@color/white"
+                        android:maxLength="10"
+                        android:gravity="center"
+                        android:hint="9111111111"
+                        android:inputType="number"
+                        android:textColorHint="@color/material_grey_400" />
+
+
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+
             <com.romainpiel.shimmer.ShimmerTextView
                 android:id="@+id/shimmer_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="380dp"
-                android:text=">  slide to unclock"
+                android:layout_marginTop="100dp"
+                android:text=">  ارسال شناسه"
                 android:textColor="#444"
+                android:visibility="gone"
                 android:textSize="25sp" />
 
 
         </LinearLayout>
 
     </FrameLayout>
-
-
 
 
 </com.gw.swipeback.SwipeBackLayout>
