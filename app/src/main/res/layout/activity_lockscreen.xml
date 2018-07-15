@@ -83,6 +83,15 @@
 
 
 
+                <Button
+                    android:id="@+id/btn_sendNum_lock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="ارسال"
+                    android:enabled="false"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/btn_round"/>
 
             </LinearLayout>
 
@@ -92,11 +101,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="100dp"
-                android:text=">  ارسال شناسه"
+                android:layout_marginTop="70dp"
+                android:text=">  ورود به اپلیکیشن"
                 android:textColor="#444"
                 android:visibility="gone"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
 
 
         </LinearLayout>

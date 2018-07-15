@@ -1,6 +1,7 @@
 package pro.book.ar.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import pro.book.ar.Adapter.GalleryRecyclerAdapter;
 import pro.book.ar.Data.Gallery_app;
 import pro.book.ar.Model.GalleryModel;
 import pro.book.ar.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class ActivityGallery extends Activity {
@@ -61,6 +63,10 @@ public class ActivityGallery extends Activity {
     }
 
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 
 

@@ -1,6 +1,7 @@
 package pro.book.ar.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.widget.CheckBox;
@@ -10,6 +11,7 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
 import butterknife.ButterKnife;
 import pro.book.ar.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class ActivityMusic extends Activity implements QRCodeReaderView.OnQRCodeReadListener {
@@ -104,6 +106,11 @@ public class ActivityMusic extends Activity implements QRCodeReaderView.OnQRCode
         //your code
 
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 

@@ -1,35 +1,28 @@
 package pro.book.ar.Activity;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.gw.swipeback.SwipeBackLayout;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pro.book.ar.Classes.BaseSwipeBackActivity;
-import pro.book.ar.Classes.ImageUtil;
-import pro.book.ar.Model.Target;
+import pro.book.ar.Classes.MyCountDownTimer;
 import pro.book.ar.Network.AppController;
 import pro.book.ar.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class LockscreenActivity extends BaseSwipeBackActivity {
@@ -42,6 +35,9 @@ public class LockscreenActivity extends BaseSwipeBackActivity {
     EditText etPhoneLock;
 
     final int maxLength = 10;
+    public static MyCountDownTimer myCountDownTimer;
+    @BindView(R.id.btn_sendNum_lock)
+    Button btnSendNumLock;
 
     @Override
     protected int getLayoutId() {
@@ -93,16 +89,14 @@ public class LockscreenActivity extends BaseSwipeBackActivity {
         swipeBackLayout.setSwipeFromEdge(true);
         swipeBackLayout.setSwipeBackFactor(1f);
 
-        swipeBackLayout.setSwipeBackListener(new SwipeBackLayout.OnSwipeBackListener() {
+        btnSendNumLock.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onViewPositionChanged(View mView, float swipeBackFraction, float SWIPE_BACK_FACTOR) {
+            public void onClick(View v) {
 
-
-
-            }
-
-            @Override
-            public void onViewSwipeFinished(View mView, boolean isEnd) {
+                    myCountDownTimer = new MyCountDownTimer(60 * 1000, 1000);
+                    myCountDownTimer.setSourceActivity((LoginActivity) AppController.context);
+                    Toast.makeText(LockscreenActivity.this, "شماره ارسال شد", Toast.LENGTH_SHORT).show();
+                    myCountDownTimer.start();
 
                 //Server Code
 
@@ -128,23 +122,26 @@ public class LockscreenActivity extends BaseSwipeBackActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if(etPhoneLock.getText().toString().length() == maxLength){
+                if (etPhoneLock.getText().toString().length() == maxLength) {
                     tv.setVisibility(View.VISIBLE);
+                    swipeBackLayout.setSwipeFromEdge(false);
+                    btnSendNumLock.setEnabled(true);
 
-                    //swipeBackLayout.setEnabled(true);
-
-                }else {
+                } else {
                     tv.setVisibility(View.GONE);
-                    //swipeBackLayout.setEnabled(false);
+                    btnSendNumLock.setEnabled(false);
                 }
 
             }
         });
 
 
-
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 
 }

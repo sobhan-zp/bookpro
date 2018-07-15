@@ -34,6 +34,7 @@ public class AppController extends Application {
     public final static String URL_TARGET = URL + "target/";
     public final static String URL_TARGET_DETAIL = URL + "Target/detail/";
 
+    public  static Context context = null;
 
 
     public static String SAVE_PATH = "SAVE_LOGIN";

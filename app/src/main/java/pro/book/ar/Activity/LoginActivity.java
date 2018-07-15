@@ -1,5 +1,6 @@
 package pro.book.ar.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pro.book.ar.Classes.BaseToolBarActivity;
+import pro.book.ar.Classes.MyCountDownTimer;
+import pro.book.ar.Network.AppController;
 import pro.book.ar.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import za.co.riggaroo.materialhelptutorial.TutorialItem;
 import za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity;
 
@@ -53,6 +58,10 @@ public class LoginActivity extends BaseToolBarActivity {
     TextView t9Key0;
     @BindView(R.id.t9_key_backspace)
     TextView t9KeyBackspace;
+    @BindView(R.id.tv_resms_login)
+    TextView tvResmsLogin;
+    @BindView(R.id.tv_changeNum_login)
+    TextView tvChangeNumLogin;
 
 
     private GoogleApiClient client;
@@ -69,22 +78,38 @@ public class LoginActivity extends BaseToolBarActivity {
         setContentView(R.layout.activity_login);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ButterKnife.bind(this);
+        AppController.context = this;
+
+
 
         //swipe
         startActivity(LockscreenActivity.class);
+        //Send Verify Code
+        tvResmsLogin.setEnabled(false);
 
-        // Start code for Intro App
-        prefs = getSharedPreferences("pro.rasht.ar", MODE_PRIVATE);
-        if (prefs.getBoolean("firstrun", true)) {
-            loadTutorial();
-            prefs.edit().putBoolean("firstrun", false).commit();
+
+    }
+
+    public void onCountDownTimerFinishEvent()
+    {
+        this.tvResmsLogin.setEnabled(true);
+    }
+
+    public void onCountDownTimerTickEvent(long millisUntilFinished)
+    {
+        long leftSeconds = millisUntilFinished / 1000;
+
+        String sendButtonText = "ثانیه " + (leftSeconds -1) ;
+
+        if((leftSeconds -1 )==0)
+        {
+            sendButtonText = "ارسال مجدد کد";
+            tvResmsLogin.setEnabled(true);
+            LockscreenActivity.myCountDownTimer.onFinish();
+
         }
-        // End code for Intro App
 
-
-        //keyboard
-
-
+        this.tvResmsLogin.setText(sendButtonText);
     }
 
 
@@ -134,6 +159,19 @@ public class LoginActivity extends BaseToolBarActivity {
                 }
             }
             break;
+           case R.id.tv_resms_login:{
+
+                LockscreenActivity.myCountDownTimer = new MyCountDownTimer(60 * 1000, 1000);
+                LockscreenActivity.myCountDownTimer.setSourceActivity((LoginActivity) AppController.context);
+                LockscreenActivity.myCountDownTimer.start();
+
+            }
+            break;
+            case R.id.tv_changeNum_login:{
+                Intent i = new Intent(LoginActivity.this , LockscreenActivity.class);
+                startActivity(i);
+            }
+            break;
 
 
         }
@@ -143,85 +181,6 @@ public class LoginActivity extends BaseToolBarActivity {
         }
     }
 
-
-    // Start code for Intro App
-    public void loadTutorial() {
-        Intent mainAct = new Intent(this, MaterialTutorialActivity.class);
-        mainAct.putParcelableArrayListExtra(MaterialTutorialActivity.MATERIAL_TUTORIAL_ARG_TUTORIAL_ITEMS, getTutorialItems(this));
-        startActivityForResult(mainAct, REQUEST_CODE);
-
-    }
-
-    private ArrayList<TutorialItem> getTutorialItems(Context context) {
-        TutorialItem tutorialItem1 = new TutorialItem(R.string.slide1_title, R.string.slide1_subtitle,
-                R.color.slide1, R.drawable.tut_page_3_foreground, R.drawable.tut_page_3_foreground);
-        TutorialItem tutorialItem2 = new TutorialItem(R.string.slide2_title, R.string.slide2_subtitle,
-                R.color.slide2, R.drawable.tut_page_3_foreground, R.drawable.tut_page_3_foreground);
-        TutorialItem tutorialItem3 = new TutorialItem(R.string.slide3_title, R.string.slide3_subtitle,
-                R.color.slide3, R.drawable.tut_page_3_foreground, R.drawable.tut_page_3_foreground);
-        TutorialItem tutorialItem4 = new TutorialItem(R.string.slide4_title, R.string.slide4_subtitle,
-                R.color.slide4, R.drawable.tut_page_3_foreground, R.drawable.tut_page_3_foreground);
-
-
-        ArrayList<TutorialItem> tutorialItems = new ArrayList<>();
-        tutorialItems.add(tutorialItem1);
-        tutorialItems.add(tutorialItem2);
-        tutorialItems.add(tutorialItem3);
-        tutorialItems.add(tutorialItem4);
-
-        return tutorialItems;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //    super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            Toast.makeText(this, "Tutorial finished", Toast.LENGTH_LONG).show();
-
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        /*client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://pro.rasht.ar/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);*/
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        /*Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://pro.rasht.ar/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();*/
-    }
-    // End code for Intro App
-
     // Swipe
     public void startActivity(Class<?> clazz) {
         startActivity(new Intent(LoginActivity.this, clazz));
@@ -230,6 +189,13 @@ public class LoginActivity extends BaseToolBarActivity {
     protected <T extends View> T $(@IdRes int id) {
         return (T) super.findViewById(id);
     }
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
 
 
 }
