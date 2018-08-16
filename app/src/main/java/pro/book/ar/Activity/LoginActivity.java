@@ -14,14 +14,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pro.book.ar.Classes.BaseToolBarActivity;
+import pro.book.ar.Classes.ImageUtil;
 import pro.book.ar.Classes.MyCountDownTimer;
+import pro.book.ar.Model.Target;
 import pro.book.ar.Network.AppController;
 import pro.book.ar.R;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -81,7 +91,7 @@ public class LoginActivity extends BaseToolBarActivity {
         AppController.context = this;
 
 
-
+        loadTarget();
         //swipe
         startActivity(LockscreenActivity.class);
         //Send Verify Code
@@ -196,6 +206,44 @@ public class LoginActivity extends BaseToolBarActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    private void loadTarget() {
+        JsonArrayRequest req = new JsonArrayRequest(AppController.URL_TARGET,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        //Log.e("TAG---------OK", response.toString());
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
 
+                                JSONObject object = response.getJSONObject(i);
+                                String url = object.getString("url");
+
+                                Target target = new Target(
+                                        String.valueOf(i),
+                                        url.substring( url.lastIndexOf('/')+1, url.length() ),
+                                        object.getString("url"),
+                                        object.getString("value")
+                                );
+
+                                new ImageUtil(LoginActivity.this, target.getUrl(), target.getName());
+
+                                AppController.TARGET.add(target);
+                            }
+                            AppController.TARGET_NUMBERS = response.length();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("TAG------------Error", "Error: " + error.getMessage());
+            }
+        });
+        req.setShouldCache(false);
+        AppController.getInstance().addToRequestQueue(req, "loadTarget");
+    }
 
 }

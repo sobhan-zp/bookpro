@@ -102,7 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="70dp"
-                android:text=">  ورود به اپلیکیشن"
+                android:text=">  ورود به اپلیکیشن
+"
+
+
                 android:textColor="#444"
                 android:visibility="gone"
                 android:textSize="20sp" />

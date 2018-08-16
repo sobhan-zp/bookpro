@@ -29,7 +29,7 @@ public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
 
 
-    public final static String URL = "http://192.168.1.22/rashtpro/index.php/api/";
+    public final static String URL = "http://192.168.1.22/rest/index.php/api/";
 
     public final static String URL_TARGET = URL + "target/";
     public final static String URL_TARGET_DETAIL = URL + "Target/detail/";
